@@ -1,0 +1,38 @@
+{
+  "guide": "MiniZinc Syntax and Style",
+  "purpose": "Provide a project-agnostic quick reference on MiniZinc syntax, modeling patterns, and stylistic preferences used by this team.",
+  "syntax_principles": [
+    "Introduce tuple or record type aliases (e.g., type Pair = tuple(T1, T2)) before using nested tuples in arrays to avoid ambiguous type-inst errors.",
+    "Use record types or opt fields when coordinates or optional entries are needed; avoid raw integers if a semantic type clarifies intent.",
+    "Bind temporary views of complex expressions with let-in statements inside quantified expressions instead of repeating long selectors.",
+    "Prefer built-in globals (alldifferent, cumulative, etc.) over hand-written constraints when they match the requirement."
+  ],
+  "modeling_patterns": [
+    "Represent grids or similar structures with 2D arrays and define DIGITS/INDEX sets instead of duplicating in definitions.",
+    "When modeling jagged array structures (thermometers, whispers, cages), describe the maximum length and guard unused slots with occurs().",
+    "For relational constraints (e.g., equality, arithmetic differences), operate on the actual decision variables rather than metadata records.",
+    "Leverage assert constraints for structural sanity checks."
+  ],
+  "style_preferences": [
+    "Keep comments concise and focused on explaining modeling tricks or unusual encodings.",
+    "Group related constraint blocks under clear banner comments (%%%%%%%% Section %%%%%%%%) to aid navigation.",
+    "Name parameters descriptively (cage_count, thermo_max_length) and keep naming consistent across data files for a given model.",
+    "Default to Unicode symbols when syntax permits when modeling mathematical relations. Dont use unicode that is not defined for the language.",
+    "Favor clarity over terseness; break complex comprehensions into intermediate lets or helper arrays when it improves readability."
+  ],
+  "workflow": [
+    "After edits, run minizinc at least once with a representative data file to confirm the model parses and solves.",
+    "Document any new modeling conventions here immediately so future agents inherit the knowledge without searching commit history.",
+    "When adding new parameter structures, provide minimal example data snippets showing the expected format.",
+    "Watch for accidental stray characters (e.g., repeated letters) when copying puzzle data and clean them up before committing.",
+    "Favor deterministic solver output (e.g., using default solver) unless a specific backend is required; note overrides in comments.",
+    "Refer to the official documentation (https://docs.minizinc.dev/en/stable/index.html) and especially the reference manual (https://docs.minizinc.dev/en/stable/part_4_reference.html) whenever language details or operator definitions are unclear."
+  ],
+  "maintenance": [
+    "Keep this file project-agnostic: describe MiniZinc practices, not puzzle-specific lore.",
+    "Update the syntax and style sections whenever you discover new pitfalls or establish new conventions.",
+    "If guidance becomes obsolete due to MiniZinc releases, revise or remove it promptly.",
+    "Encourage every contributor to read this file alongside codex.context.json before editing any MiniZinc model.",
+    "Record significant style changes here so they propagate across all future MiniZinc projects."
+  ]
+}

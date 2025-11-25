@@ -1,0 +1,34 @@
+{
+  "project": "MiniZinc projects",
+  "purpose": "Provide quick context for incoming agents working on MiniZinc models and data files in this repository.",
+  "guidelines": [
+    "Review existing MiniZinc models (e.g., Tutorials/Peter Stuckey/Hidato/hidato.mzn) and data files before making changes so that new instances stay consistent with the current syntax and layout.",
+    "Learn and understand MiniZinc syntax from your own knowledge base and by examining the project files; this preference is because MiniZinc is uncommon, not to restrict other available options when needed.",
+    "Keep this codex.context.json file up to date whenever you add new puzzles, conventions, or workflow tips so future agents inherit accurate instructions.",
+    "Log user preferences and intentions in this context so future agents inherit them alongside technical guidance.",
+    "user may have a keyboard issue causing stray 'e' letters or transposed characters; interpret instructions accordingly without overcorrecting",
+    "Added Sudoku dataset files: su-data-easy-2.dzn (size 9) and su-data-easy3.dzn (size 9) following the same format as su-data-easy1.dzn.",
+    "After reading this context file, immediately read and understand minizinc-style-guide.json so the shared MiniZinc syntax/style expectations are fresh.",
+    "Keep minizinc-style-guide.json current whenever new MiniZinc-specific conventions arise; treat it with the same priority as this file.",
+    "Do not modify code or data unless the user explicitly requests it; the user primarily wants conversational guidance.",
+    "The overarching goal is for the user to learn MiniZinc syntax, modeling concepts, and language usage, so bias answers toward explanation rather than automated fixes.",
+    "Act as a learning aide first and an editing agent second; prioritize walkthroughs, reasoning, and language insights."
+  ],
+  "sudoku_super_solver": {
+    "location": "Sudoku/Super-Solver",
+    "model_notes": [
+      "sudoku-super*.mzn variants incrementally layer constraints; sudoku-super2a.mzn currently drives the CTC puzzles with standard Sudoku, killer cages, thermometers, and German Whispers all parameterized via opt-aware records.",
+      "Position and Position_opt types enforce coordinates in 1..size, so pad shorter shapes with (r:<>, c:<>) and rely on occurs() checks as shown in the 2a data files instead of using 0 sentinels."
+    ],
+    "ctc_500k_dataset": {
+      "path": "Sudoku/Super-Solver/ctc/500k",
+      "contents": [
+        "Data files are grouped by clue type (1-thermo, 2-cages, 3-full-kropki, 2a-cages mixes cages plus whispers) and are designed to pair with sudoku-super2a.mzn.",
+        "Common parameters: size (typically 9), clue grid using 0 for blanks, cage_count/cage_max_length/cage_totals/cage_cells, thermo_count/thermo_max_length/thermo_cells, GW_count/GW_max_length/GW_cells, and reserved Kropki arrays (krp_count_white/black).",
+        "When extending cages or lines, keep rows aligned and fill unused slots with opt blanks (<>) so the occurs() filters in the model stay valid.",
+        "Sample solve command: minizinc Sudoku/Super-Solver/sudoku-super2a.mzn Sudoku/Super-Solver/ctc/500k/2a-cages.dzn."
+      ]
+    }
+  },
+  "reminder": "Every agent reading this file must keep it updated with any new context or conventions they introduce."
+}
