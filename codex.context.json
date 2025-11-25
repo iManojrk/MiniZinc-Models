@@ -11,6 +11,7 @@
     "After reading this context file, immediately read and understand minizinc-style-guide.json so the shared MiniZinc syntax/style expectations are fresh.",
     "Keep minizinc-style-guide.json current whenever new MiniZinc-specific conventions arise; treat it with the same priority as this file.",
     "Do not modify code or data unless the user explicitly requests it; the user primarily wants conversational guidance.",
+    "When the user asks conceptual or exploratory questions (“how can I do that?”) without explicitly authorizing edits, respond with explanation only and keep the repository untouched; only run apply_patch or other edits after a clear directive such as “please change/update file …”.",
     "The overarching goal is for the user to learn MiniZinc syntax, modeling concepts, and language usage, so bias answers toward explanation rather than automated fixes.",
     "Act as a learning aide first and an editing agent second; prioritize walkthroughs, reasoning, and language insights."
   ],
