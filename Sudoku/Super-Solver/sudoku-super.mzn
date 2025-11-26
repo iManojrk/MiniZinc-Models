@@ -1,6 +1,7 @@
 % Sudoku model in MiniZinc
 
 include "alldifferent.mzn";
+include "inverse.mzn";
 
 %%%%%%%%% regular Sudoku constraints %%%%%%%%%
 int: size;
@@ -163,6 +164,104 @@ constraint (
 
 %%%%%%%%% Knight constraints %%%%%%%%%
 
+% enable/disable chess-knight non-equal constraint
 bool: knight;
 
+% relative row/column offsets for a knight move
+type Move = record(int: r, int: c);
 
+array[int] of Move: moves = [
+  (r: -2, c: -1),
+  (r: -1, c: -2),
+  (r: -2, c: 1),
+  (r: -1, c: 2),
+  (r: 2, c: -1),
+  (r: 1, c: -2),
+  (r: 2, c: 1),
+  (r: 1, c: 2),
+];
+
+% when enabled, no two cells a knight's move apart may contain the same digit
+constraint (
+  (not knight)
+  \/ forall(r, c in INDEX_1D) (
+    forall(mv in moves where (r+mv.r) in INDEX_1D /\ (c+mv.c) in INDEX_1D) (
+      grid[r, c] != grid[r+mv.r, c+mv.c]
+    )
+  )
+);
+
+%%%%%%%%% Sandwich constraints %%%%%%%%%
+
+% enable/disable sandwich sums (digits between 1 and 9)
+bool: sandwich;
+
+% optional sums between 1 and 9 for each row/column (<> means "no sandwich clue")
+array[INDEX_1D] of opt 0..36: swh_row_sums;
+array[INDEX_1D] of opt 0..36: swh_col_sums;
+
+set of int: SWH_ROWS_WITH_SUM = { 
+  r | r in INDEX_1D where occurs(swh_row_sums[r])
+};
+set of int: SWH_COLS_WITH_SUM = { 
+  c | c in INDEX_1D where occurs(swh_col_sums[c])
+};
+
+% positions of 1 and 9 in each row/column (chosen by the solver)
+array[SWH_COLS_WITH_SUM] of var INDEX_1D: swh_row_index_1;
+array[SWH_COLS_WITH_SUM] of var INDEX_1D: swh_row_index_9;
+array[SWH_ROWS_WITH_SUM] of var INDEX_1D: swh_col_index_1;
+array[SWH_ROWS_WITH_SUM] of var INDEX_1D: swh_col_index_9;
+
+% link row indices to the actual locations of 1 and 9 in each row
+constraint (
+  (not sandwich)
+  \/ 
+  forall(r in SWH_ROWS_WITH_SUM) (
+      grid[r,swh_col_index_1[r]] = 1
+      /\
+      grid[r,swh_col_index_9[r]] = 9
+  )
+);
+
+% if a row sandwich sum is given, constrain the sum of digits strictly between 1 and 9
+constraint (
+  (not sandwich)
+  \/ 
+  forall(r in SWH_ROWS_WITH_SUM) (
+    let {
+      var INDEX_1D: min_i = min(swh_col_index_1[r], swh_col_index_9[r]);
+      var INDEX_1D: max_i = max(swh_col_index_1[r], swh_col_index_9[r]);
+    } in
+    sum([ grid[r, c] | c in min_i+1..max_i-1 ]) = swh_row_sums[r]
+  )
+);
+
+% link column indices to the actual locations of 1 and 9 in each column
+constraint (
+  (not sandwich)
+  \/ 
+  forall(c in SWH_COLS_WITH_SUM) (
+    grid[swh_row_index_1[c], c] = 1
+    /\
+    grid[swh_row_index_9[c], c] = 9
+  )
+);
+
+% if a column sandwich sum is given, constrain the sum of digits strictly between 1 and 9
+constraint (
+  (not sandwich)
+  \/ 
+  forall(c in SWH_COLS_WITH_SUM) (
+    let {
+      var INDEX_1D: min_i = min(swh_row_index_1[c], swh_row_index_9[c]);
+      var INDEX_1D: max_i = max(swh_row_index_1[c], swh_row_index_9[c]);
+    } in
+    sum([ grid[r, c] | r in min_i+1..max_i-1 ]) = swh_col_sums[c]
+  )
+);
+
+constraint (not sandwich) \/ alldifferent(swh_col_index_1);
+constraint (not sandwich) \/ alldifferent(swh_col_index_9);
+constraint (not sandwich) \/ alldifferent(swh_row_index_1);
+constraint (not sandwich) \/ alldifferent(swh_row_index_9);

@@ -1,0 +1,56 @@
+% Solution
+
+%%%%%%%%%% Sudoku parameters %%%%%%%%%%
+size = 9;
+
+clue = [|
+    0, 0, 0,   0, 0, 0,   0, 0, 0
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  | 0, 0, 0,   0, 1, 0,   0, 0, 0
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  | 0, 0, 0,   0, 0, 0,   0, 0, 0
+  |];
+
+%%%%%%%%%% Killer parameters %%%%%%%%%%
+
+cage_count = 0;
+
+cage_totals = [];
+
+cage_cells = [];
+
+%%%%%%%%%% Thermometer parameters %%%%%%%%%%
+
+thermo_cells = [];
+
+%%%%%%%% German Whispers parameters %%%%%%%%%
+
+GW_cells = []; 
+
+%%%%%%%% Partial Kropki parameters %%%%%%%%%
+
+krp_cells_white = [];
+
+krp_cells_black = [];
+
+%%%%%%%% Full Kropki parameters %%%%%%%%%
+
+full_kropki = false;
+
+%%%%%%%% Knight parameters %%%%%%%%%
+
+knight = false;
+
+%%%%%%%% Sandwich parameters %%%%%%%%%
+
+
+sandwich = true;
+
+swh_row_sums = [12, 33, <>, 14, <>, 14, <>, 32, 17];
+swh_col_sums = [14, 2, 20, 15, <>, <>, 12, 3, <>];
