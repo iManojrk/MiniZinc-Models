@@ -2,24 +2,20 @@
 
 include "alldifferent.mzn";
 
-%%%%%%%% regular Sudoku constraints %%%%%%%%
+%%%%%%%%% regular Sudoku constraints %%%%%%%%%
 int: size;
 
 set of int: CLUE_DIGITS = 0..size;
 set of int: DIGITS = 1..size;
 set of int: INDEX_1D = 1..size;
 
-% 0 for blanks
 type Position = record(INDEX_1D: r, INDEX_1D: c);
-% only r is checked for opt, c is
-type Position_opt = record(opt INDEX_1D: r, opt INDEX_1D: c);
-
 
 array[INDEX_1D, INDEX_1D] of CLUE_DIGITS: clue;
 array[INDEX_1D, INDEX_1D] of var DIGITS: grid;
 
 % clue cells must match
-constraint forall(r in INDEX_1D, c in INDEX_1D where clue[r,c] != 0) (
+constraint forall(r, c in INDEX_1D where clue[r,c] != 0) (
   grid[r,c] = clue[r,c]
 );
 
@@ -35,12 +31,12 @@ constraint forall(c in INDEX_1D) (
 
 % block constraints
 int: block_size = round(sqrt(int2float(size)));
-constraint forall(br in 0..block_size-1, bc in 0..block_size-1) (
+constraint forall(br, bc in 0..block_size-1) (
   alldifferent([grid[br*block_size + r, bc*block_size + c] |
                  r in 1..block_size, c in 1..block_size])
 );
 
-%%%%%%%% Killer Sudoku constraints %%%%%%%%%
+%%%%%%%%% Killer Sudoku constraints %%%%%%%%%
 
 % totals constraint
 int: cage_count;
@@ -61,7 +57,7 @@ constraint forall(cage in cage_cells) (
   alldifferent([ grid[cage[i].r, cage[i].c] | i in index_set(cage) ])
 );
 
-%%%%%%%% Thermometer constraints %%%%%%%%%
+%%%%%%%%% Thermometer constraints %%%%%%%%%
 
 array[int] of array[int] of Position: thermo_cells;
 
@@ -72,7 +68,7 @@ constraint forall(th in thermo_cells) (
   )
 );
 
-%%%%%%%% German Whispers constraints %%%%%%%%%
+%%%%%%%%% German Whispers constraints %%%%%%%%%
 
 array[int] of array[int] of Position: GW_cells;
 % this assumes adjacent cells in the array are the only neighbors (no cross linking)
@@ -85,7 +81,7 @@ constraint forall(ger in GW_cells) (
   )
 );
 
-%%%%%%%% Partial Kropki constraints %%%%%%%%%
+%%%%%%%%% Partial Kropki constraints %%%%%%%%%
 
 array[int] of tuple(Position, Position): krp_cells_white;
 array[int] of tuple(Position, Position): krp_cells_black;
@@ -101,7 +97,7 @@ constraint forall(krp in krp_cells_black) (
   (2 * grid[krp.1.r, krp.1.c] = grid[krp.2.r, krp.2.c])
 );
 
-%%%%%%%% Partial Kropki assertion %%%%%%%%%
+%%%%%%%%% Partial Kropki assertion %%%%%%%%%
 
 constraint assert(
   forall(krp in krp_cells_white) (
@@ -121,7 +117,7 @@ constraint assert(
   "Input Error: Kropki black cell pairs must be adjacent to each other. Second position should be below or to the right of first index."
 );
 
-%%%%%%%% Full Kropki constraints %%%%%%%%%
+%%%%%%%%% Full Kropki constraints %%%%%%%%%
 
 bool: full_kropki;
 
@@ -164,3 +160,9 @@ constraint (
     (grid[r, c] * 2 != grid[r+1, c])
   )
 );
+
+%%%%%%%%% Knight constraints %%%%%%%%%
+
+bool: knight;
+
+

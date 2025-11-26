@@ -1,22 +1,10 @@
 % Solution
 
-% grid = 
-% [| 6, 5, 2, 9, 3, 8, 4, 1, 7
-%  | 9, 3, 7, 4, 5, 1, 6, 8, 2
-%  | 8, 1, 4, 7, 2, 6, 9, 3, 5
-%  | 4, 2, 1, 6, 9, 3, 5, 7, 8
-%  | 7, 9, 6, 8, 1, 5, 2, 4, 3
-%  | 5, 8, 3, 2, 4, 7, 1, 6, 9
-%  | 2, 6, 8, 5, 7, 4, 3, 9, 1
-%  | 3, 7, 5, 1, 6, 9, 8, 2, 4
-%  | 1, 4, 9, 3, 8, 2, 7, 5, 6
-%  |];
-
 %%%%%%%%%% Sudoku parameters %%%%%%%%%%
 size = 9;
 
 clue = [|
-   0, 0, 0,   0, 0, 0,   0, 0, 0
+    0, 0, 0,   0, 0, 0,   0, 0, 0
   | 0, 0, 0,   0, 0, 0,   0, 0, 0
   | 0, 0, 0,   0, 0, 0,   0, 0, 0
   
@@ -45,7 +33,7 @@ thermo_cells = [];
 
 GW_cells = []; 
 
-%%%%%%%% Partial Kropki constraints %%%%%%%%%
+%%%%%%%% Partial Kropki parameters %%%%%%%%%
 
 krp_cells_white = [
   ((r: 1, c: 1), (r: 1, c: 2)),
@@ -79,7 +67,10 @@ krp_cells_black = [
   ((r: 8, c: 8), (r: 8, c: 9))
 ];
 
-%%%%%%%% Full Kropki constraints %%%%%%%%%
+%%%%%%%% Full Kropki parameters %%%%%%%%%
 
 full_kropki = true;
 
+%%%%%%%% Knight parameters %%%%%%%%%
+
+knight = false;
