@@ -44,121 +44,83 @@ constraint forall(br in 0..block_size-1, bc in 0..block_size-1) (
 
 % totals constraint
 int: cage_count;
-int: cage_max_length;
 
 array[1..cage_count] of opt int: cage_totals;
 
-array[1..cage_count, 1..cage_max_length] of Position_opt: cage_cells;
-
-% array[1..cage_count] of DIGITS: cage_length = [
-%   sum(cg in 1..cage_count) (bool2int(occurs(cage_cells[cg].r)))
-% ]
+array[1..cage_count] of array[int] of Position: cage_cells;
 
 constraint forall(cg in 1..cage_count where occurs(cage_totals[cg])) (
   sum([
-    grid[cage_cells[cg, i].r, cage_cells[cg, i].c]
-    | i in 1..cage_max_length 
-    where occurs(cage_cells[cg, i].r)
-  ]) = cage_totals[cg]
+    grid[cage_cells[cg][i].r, cage_cells[cg][i].c]
+    | i in index_set(cage_cells[cg])
+  ]) ~= cage_totals[cg]
 );
 
 % no repeats within the cage
 constraint forall(cg in 1..cage_count) (
   alldifferent([
-    grid[cage_cells[cg, i].r, cage_cells[cg, i].c]
-    | i in 1..cage_max_length 
-    where occurs(cage_cells[cg, i].r)
+    grid[cage_cells[cg][i].r, cage_cells[cg][i].c]
+    | i in index_set(cage_cells[cg])
+    where occurs(cage_cells[cg][i].r)
   ])
 );
 
 %%%%%%%% Thermometer constraints %%%%%%%%%
 
-int: thermo_count;
-int: thermo_max_length;
+array[int] of array[int] of Position: thermo_cells;
 
-array[1..thermo_count, 1..thermo_max_length] of Position_opt: thermo_cells;
-
-constraint forall(th in 1..thermo_count) (
-  forall(i in 2..thermo_max_length where occurs(thermo_cells[th, i].r)) (
-    grid[thermo_cells[th, i-1].r, thermo_cells[th, i-1].c] 
-    < grid[thermo_cells[th, i].r, thermo_cells[th, i].c]
+constraint forall(th in index_set(thermo_cells)) (
+  forall(i in 2..length(thermo_cells[th])) (
+    grid[thermo_cells[th][i-1].r, thermo_cells[th][i-1].c] 
+    < grid[thermo_cells[th][i].r, thermo_cells[th][i].c]
   )
 );
 
 %%%%%%%% German Whispers constraints %%%%%%%%%
 
-int: GW_count;
-int: GW_max_length;
-
-array[1..GW_count, 1..GW_max_length] of Position_opt: GW_cells;
+array[int] of array[int] of Position: GW_cells;
 % this assumes adjacent cells in the array are the only neighbors (no cross linking)
-constraint forall(ger in 1..GW_count) (
-  forall(i in 2..GW_max_length where occurs(GW_cells[ger, i].r)) (
+constraint forall(ger in index_set(GW_cells)) (
+  forall(i in 2..length(GW_cells[ger])) (
     abs(
-      grid[GW_cells[ger, i-1].r, GW_cells[ger, i-1].c] 
-      - grid[GW_cells[ger, i].r, GW_cells[ger, i].c]
+      grid[GW_cells[ger][i-1].r, GW_cells[ger][i-1].c] 
+      - grid[GW_cells[ger][i].r, GW_cells[ger][i].c]
     ) >= 5
   )
 );
 
 %%%%%%%% Partial Kropki constraints %%%%%%%%%
 
-int: krp_count_white;
-array[1..krp_count_white] of tuple(Position, Position): krp_cells_white;
-
-int: krp_count_black;
-array[1..krp_count_black] of tuple(Position, Position): krp_cells_black;
+array[int] of tuple(Position, Position): krp_cells_white;
+array[int] of tuple(Position, Position): krp_cells_black;
 
 
-constraint forall(krp in 1..krp_count_white) (
-  let {
-    Position: p1 = krp_cells_white[krp].1,
-    Position: p2 = krp_cells_white[krp].2
-  } in
-    abs(grid[p1.r, p1.c] - grid[p2.r, p2.c]) = 1
+constraint forall(krp in krp_cells_white) (
+    abs(grid[krp.1.r, krp.1.c] - grid[krp.2.r, krp.2.c]) = 1
 );
 
-constraint forall(krp in 1..krp_count_black) (
-  let {
-    Position: p1 = krp_cells_black[krp].1,
-    Position: p2 = krp_cells_black[krp].2
-  } in
-    (grid[p1.r, p1.c] = 2 * grid[p2.r, p2.c])
-    \/ (2 * grid[p1.r, p1.c] = grid[p2.r, p2.c])
+constraint forall(krp in krp_cells_black) (
+  (grid[krp.1.r, krp.1.c] = 2 * grid[krp.2.r, krp.2.c])
+  \/
+  (2 * grid[krp.1.r, krp.1.c] = grid[krp.2.r, krp.2.c])
 );
 
 %%%%%%%% Partial Kropki assertion %%%%%%%%%
 
 constraint assert(
-  forall(krp in 1..krp_count_white) (
-      (
-        (krp_cells_white[krp].1.r = krp_cells_white[krp].2.r - 1)
-        /\
-        (krp_cells_white[krp].1.c = krp_cells_white[krp].2.c)
-      )
+  forall(krp in krp_cells_white) (
+      ((krp.1.r = krp.2.r - 1) /\ (krp.1.c = krp.2.c))
       \/
-      (
-        (krp_cells_white[krp].1.r = krp_cells_white[krp].2.r)
-        /\
-        (krp_cells_white[krp].1.c = krp_cells_white[krp].2.c - 1)
-      )
+      ((krp.1.r = krp.2.r) /\ (krp.1.c = krp.2.c - 1))
   ),
   "Input Error: Kropki white cell pairs must be adjacent to each other. Second position should be below or to the right of first index."
 );
 
 constraint assert(
-  forall(krp in 1..krp_count_black) (
-      (
-        (krp_cells_black[krp].1.r = krp_cells_black[krp].2.r - 1)
-        /\
-        (krp_cells_black[krp].1.c = krp_cells_black[krp].2.c)
-      )
+  forall(krp in krp_cells_black) (
+      ((krp.1.r = krp.2.r - 1) /\ (krp.1.c = krp.2.c))
       \/
-      (
-        (krp_cells_black[krp].1.r = krp_cells_black[krp].2.r)
-        /\
-        (krp_cells_black[krp].1.c = krp_cells_black[krp].2.c - 1)
-      )
+      ((krp.1.r = krp.2.r) /\ (krp.1.c = krp.2.c - 1))
   ),
   "Input Error: Kropki black cell pairs must be adjacent to each other. Second position should be below or to the right of first index."
 );
@@ -167,7 +129,7 @@ constraint assert(
 
 bool: full_kropki;
 
-% checking horizontal pairs that are not white or black dots
+% Getting horizontal pairs that are not white or black dots
 array[INDEX_1D, 1..size-1] of bool: _krp_chk_horiz_no_dots
 = array2d(INDEX_1D, 1..size-1, [
     not (((r: r, c: c), (r: r, c: c+1)) in (krp_cells_white ++ krp_cells_black))
@@ -175,6 +137,7 @@ array[INDEX_1D, 1..size-1] of bool: _krp_chk_horiz_no_dots
   ]
 );
 
+% Checking horizontal pairs that are not white or black dots
 constraint (
   (not full_kropki) 
   \/ forall (r in INDEX_1D, c in 1..size-1 where _krp_chk_horiz_no_dots[r,c]) (
@@ -186,7 +149,7 @@ constraint (
   )
 );
 
-% checking vertical pairs that are not white or black dots
+% Getting vertical pairs that are not white or black dots
 array[1..size-1, INDEX_1D] of bool: _krp_chk_vert_no_dots
 = array2d(1..size-1, INDEX_1D, [
     not (((r: r, c: c), (r: r+1, c: c)) in (krp_cells_white ++ krp_cells_black))
@@ -194,6 +157,7 @@ array[1..size-1, INDEX_1D] of bool: _krp_chk_vert_no_dots
   ]
 );
 
+% Checking vertical pairs that are not white or black dots
 constraint (
   (not full_kropki) 
   \/ forall (r in 1..size-1, c in INDEX_1D where _krp_chk_vert_no_dots[r,c]) (

@@ -32,7 +32,6 @@ clue = [|
 %%%%%%%%%% Killer parameters %%%%%%%%%%
 
 cage_count = 0;
-cage_max_length = 0;
 
 cage_totals = [];
 
@@ -40,21 +39,14 @@ cage_cells = [];
 
 %%%%%%%%%% Thermometer parameters %%%%%%%%%%
 
-thermo_count = 0;
-thermo_max_length = 0;
-
 thermo_cells = [];
 
 %%%%%%%% German Whispers parameters %%%%%%%%%
-
-GW_count = 0;
-GW_max_length = 0;
 
 GW_cells = []; 
 
 %%%%%%%% Partial Kropki constraints %%%%%%%%%
 
-krp_count_white = 17;
 krp_cells_white = [
   ((r: 1, c: 1), (r: 1, c: 2)),
   ((r: 2, c: 1), (r: 3, c: 1)),
@@ -75,7 +67,6 @@ krp_cells_white = [
   ((r: 9, c: 8), (r: 9, c: 9))
 ];
 
-krp_count_black = 9;
 krp_cells_black = [
   ((r: 1, c: 6), (r: 1, c: 7)),
   ((r: 3, c: 1), (r: 4, c: 1)),
