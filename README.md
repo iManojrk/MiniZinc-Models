@@ -30,3 +30,21 @@ This repository collects assorted MiniZinc example models (Sudoku variants, SEND
    ```  
 
    Add a data file argument when a model expects one (e.g., tutorial puzzles with multiple instances). MiniZinc prints solutions to stdout; pass solver flags such as `--solver` if you need a specific backend.
+
+## Verify Sudoku Super-Solver output
+
+Three pytest tests in `tests/test_sudoku_super.py` each run one of the `ctc/500k` data files (`1-thermo.dzn`, `2-cages.dzn`, `3-full-kropki.dzn`) and compare the solver output to the corresponding expected grid in `Sudoku/Super-Solver/expected-output.txt`.
+
+- Install pytest once for your Python interpreter:
+
+  ```zsh
+  python3 -m pip install --user pytest
+  ```
+
+- From the repository root, run:
+
+  ```zsh
+  pytest
+  ```
+
+  or use VS Code's Testing view to run the three tests individually.

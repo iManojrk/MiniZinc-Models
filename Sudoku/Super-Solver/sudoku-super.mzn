@@ -50,29 +50,25 @@ array[1..cage_count] of opt int: cage_totals;
 array[1..cage_count] of array[int] of Position: cage_cells;
 
 constraint forall(cg in 1..cage_count where occurs(cage_totals[cg])) (
-  sum([
-    grid[cage_cells[cg][i].r, cage_cells[cg][i].c]
-    | i in index_set(cage_cells[cg])
-  ]) ~= cage_totals[cg]
+  let {
+    array[int] of Position: cage = cage_cells[cg];
+  } in
+  sum([ grid[cage[i].r, cage[i].c] | i in index_set(cage) ]) ~= cage_totals[cg]
 );
 
 % no repeats within the cage
-constraint forall(cg in 1..cage_count) (
-  alldifferent([
-    grid[cage_cells[cg][i].r, cage_cells[cg][i].c]
-    | i in index_set(cage_cells[cg])
-    where occurs(cage_cells[cg][i].r)
-  ])
+constraint forall(cage in cage_cells) (
+  alldifferent([ grid[cage[i].r, cage[i].c] | i in index_set(cage) ])
 );
 
 %%%%%%%% Thermometer constraints %%%%%%%%%
 
 array[int] of array[int] of Position: thermo_cells;
 
-constraint forall(th in index_set(thermo_cells)) (
-  forall(i in 2..length(thermo_cells[th])) (
-    grid[thermo_cells[th][i-1].r, thermo_cells[th][i-1].c] 
-    < grid[thermo_cells[th][i].r, thermo_cells[th][i].c]
+constraint forall(th in thermo_cells) (
+  forall(i in 2..length(th)) (
+    grid[th[i-1].r, th[i-1].c] 
+    < grid[th[i].r, th[i].c]
   )
 );
 
@@ -80,11 +76,11 @@ constraint forall(th in index_set(thermo_cells)) (
 
 array[int] of array[int] of Position: GW_cells;
 % this assumes adjacent cells in the array are the only neighbors (no cross linking)
-constraint forall(ger in index_set(GW_cells)) (
-  forall(i in 2..length(GW_cells[ger])) (
+constraint forall(ger in GW_cells) (
+  forall(i in 2..length(ger)) (
     abs(
-      grid[GW_cells[ger][i-1].r, GW_cells[ger][i-1].c] 
-      - grid[GW_cells[ger][i].r, GW_cells[ger][i].c]
+      grid[ger[i-1].r, ger[i-1].c] 
+      - grid[ger[i].r, ger[i].c]
     ) >= 5
   )
 );
