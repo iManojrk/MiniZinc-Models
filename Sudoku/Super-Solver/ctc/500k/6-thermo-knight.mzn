@@ -1,3 +1,7 @@
+include "../../sudoku-core.mzn";
+include "../../sudoku-thermo.mzn";
+include "../../sudoku-knight.mzn";
+
 % Solution
 
 %%%%%%%%%% Sudoku parameters %%%%%%%%%%
@@ -17,34 +21,12 @@ clue = [|
   | 0, 0, 0,   2, 0, 0,   0, 0, 0
   |];
 
-%%%%%%%%%% Killer parameters %%%%%%%%%%
-
-cage_count = 0;
-
-cage_totals = [];
-
-cage_cells = [];
-
 %%%%%%%%%% Thermometer parameters %%%%%%%%%%
 
 thermo_cells = [
   [(r: 7, c: 4), (r: 6, c: 4), (r: 5, c: 3), (r: 4, c: 2), (r: 3, c: 3), (r: 2, c: 4)],
   [(r: 7, c: 6), (r: 6, c: 6), (r: 5, c: 7), (r: 4, c: 8), (r: 3, c: 7), (r: 2, c: 6)],
 ];
-
-%%%%%%%% German Whispers parameters %%%%%%%%%
-
-GW_cells = []; 
-
-%%%%%%%% Partial Kropki parameters %%%%%%%%%
-
-krp_cells_white = [];
-
-krp_cells_black = [];
-
-%%%%%%%% Full Kropki parameters %%%%%%%%%
-
-full_kropki = false;
 
 %%%%%%%% Knight parameters %%%%%%%%%
 

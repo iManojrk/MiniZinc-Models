@@ -18,7 +18,8 @@
     "Group related constraint blocks under clear banner comments (%%%%%%%% Section %%%%%%%%) to aid navigation.",
     "Name parameters descriptively (cage_count, thermo_max_length) and keep naming consistent across data files for a given model.",
     "Default to Unicode symbols when syntax permits when modeling mathematical relations. Dont use unicode that is not defined for the language.",
-    "Favor clarity over terseness; break complex comprehensions into intermediate lets or helper arrays when it improves readability."
+    "Favor clarity over terseness; break complex comprehensions into intermediate lets or helper arrays when it improves readability.",
+    "Place all include statements at the top of each .mzn file, before any declarations, so dependencies are obvious on first read."
   ],
   "workflow": [
     "After edits, run minizinc at least once with a representative data file to confirm the model parses and solves.",

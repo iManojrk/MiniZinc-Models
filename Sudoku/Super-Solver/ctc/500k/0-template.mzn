@@ -1,3 +1,10 @@
+include "../../sudoku-core.mzn";
+include "../../sudoku-killer.mzn";
+include "../../sudoku-thermo.mzn";
+include "../../sudoku-german-whispers.mzn";
+include "../../sudoku-kropki.mzn";
+include "../../sudoku-knight.mzn";
+
 % Solution
 
 %%%%%%%%%% Sudoku parameters %%%%%%%%%%
@@ -35,9 +42,7 @@ GW_cells = [];
 
 %%%%%%%% Partial Kropki parameters %%%%%%%%%
 
-krp_cells_white = [];
-
-krp_cells_black = [];
+krp_cells = [];
 
 %%%%%%%% Full Kropki parameters %%%%%%%%%
 

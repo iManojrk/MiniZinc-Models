@@ -2,12 +2,11 @@ import subprocess
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
-SUPER_SOLVER = ROOT / "Sudoku" / "Super-Solver"
+SUPER_SOLVER = Path(__file__).resolve().parents[3]
 
 
 def test_ctc_500k_1_thermo():
-    """Run `minizinc sudoku-super.mzn ctc/500k/1-thermos.dzn` and check output."""
+    """Run `minizinc ctc/500k/1-thermo.mzn` and check output."""
     expected_output = """grid = 
 [| 8, 1, 2, 7, 9, 3, 4, 6, 5
  | 6, 4, 3, 2, 8, 5, 9, 7, 1
@@ -21,7 +20,7 @@ def test_ctc_500k_1_thermo():
  |];
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-super.mzn", "ctc/500k/1-thermo.dzn"],
+        ["minizinc", "ctc/500k/1-thermo.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,
@@ -37,7 +36,7 @@ def test_ctc_500k_1_thermo():
 
 
 def test_ctc_500k_2_cages():
-    """Run `minizinc sudoku-super.mzn ctc/500k/2-cages.dzn` and check output."""
+    """Run `minizinc ctc/500k/2-cages.mzn` and check output."""
     expected_output = """grid = 
 [| 4, 7, 8, 6, 9, 3, 5, 2, 1
  | 1, 3, 9, 5, 2, 8, 4, 6, 7
@@ -51,7 +50,7 @@ def test_ctc_500k_2_cages():
  |];
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-super.mzn", "ctc/500k/2-cages.dzn"],
+        ["minizinc", "ctc/500k/2-cages.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,
@@ -67,7 +66,7 @@ def test_ctc_500k_2_cages():
 
 
 def test_ctc_500k_3_full_kropki():
-    """Run `minizinc sudoku-super.mzn ctc/500k/3-full-kropki.dzn` and check output."""
+    """Run `minizinc ctc/500k/3-full-kropki.mzn` and check output."""
     expected_output = """grid = 
 [| 6, 5, 2, 9, 3, 8, 4, 1, 7
  | 9, 3, 7, 4, 5, 1, 6, 8, 2
@@ -81,7 +80,7 @@ def test_ctc_500k_3_full_kropki():
  |];
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-super.mzn", "ctc/500k/3-full-kropki.dzn"],
+        ["minizinc", "ctc/500k/3-full-kropki.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,
@@ -97,7 +96,7 @@ def test_ctc_500k_3_full_kropki():
 
 
 def test_ctc_500k_4_knight():
-    """Run `minizinc sudoku-super.mzn ctc/500k/4-knight.dzn` and check output."""
+    """Run `minizinc ctc/500k/4-knight.mzn` and check output."""
     expected_output = """grid = 
 [| 4, 9, 1, 6, 7, 3, 5, 2, 8
  | 5, 2, 6, 1, 8, 9, 4, 7, 3
@@ -111,7 +110,7 @@ def test_ctc_500k_4_knight():
  |];
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-super.mzn", "ctc/500k/4-knight.dzn"],
+        ["minizinc", "ctc/500k/4-knight.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,
@@ -127,7 +126,7 @@ def test_ctc_500k_4_knight():
 
 
 def test_ctc_500k_5_classic():
-    """Run `minizinc sudoku-super.mzn ctc/500k/5-classic.dzn` and check output."""
+    """Run `minizinc ctc/500k/5-classic.mzn` and check output."""
     expected_output = """grid = 
 [| 5, 1, 3, 9, 7, 2, 4, 8, 6
  | 8, 4, 2, 5, 6, 3, 9, 7, 1
@@ -141,7 +140,7 @@ def test_ctc_500k_5_classic():
  |];
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-super.mzn", "ctc/500k/5-classic.dzn"],
+        ["minizinc", "ctc/500k/5-classic.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,
@@ -157,7 +156,7 @@ def test_ctc_500k_5_classic():
 
 
 def test_ctc_500k_6_thermo_knight():
-    """Run `minizinc sudoku-super.mzn ctc/500k/6-thermo-knight.dzn` and check output."""
+    """Run `minizinc ctc/500k/6-thermo-knight.mzn` and check output."""
     expected_output = """grid = 
 [| 6, 1, 9, 7, 5, 4, 8, 2, 3
  | 3, 5, 4, 9, 2, 8, 6, 7, 1
@@ -171,7 +170,7 @@ def test_ctc_500k_6_thermo_knight():
  |];
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-super.mzn", "ctc/500k/6-thermo-knight.dzn"],
+        ["minizinc", "ctc/500k/6-thermo-knight.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,
@@ -187,7 +186,7 @@ def test_ctc_500k_6_thermo_knight():
 
 
 def test_ctc_500k_7_sandwich():
-    """Run `minizinc sudoku-with-sandwich.mzn ctc/500k/7-sandwich.dzn` and check output."""
+    """Run `minizinc ctc/500k/7-sandwich.mzn` and check output."""
     expected_output = """2 3 9  8 4 1  6 7 5
 1 8 5  7 3 6  4 9 2
 6 7 4  5 9 2  1 3 8
@@ -201,7 +200,7 @@ def test_ctc_500k_7_sandwich():
 4 6 8  1 7 3  2 5 9
 ----------"""
     result = subprocess.run(
-        ["minizinc", "sudoku-with-sandwich.mzn", "ctc/500k/7-sandwich.dzn"],
+        ["minizinc", "ctc/500k/7-sandwich.mzn"],
         cwd=SUPER_SOLVER,
         capture_output=True,
         text=True,

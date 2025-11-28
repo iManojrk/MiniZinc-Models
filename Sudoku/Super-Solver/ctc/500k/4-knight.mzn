@@ -1,3 +1,6 @@
+include "../../sudoku-core.mzn";
+include "../../sudoku-knight.mzn";
+
 % Solution
 
 %%%%%%%%%% Sudoku parameters %%%%%%%%%%
@@ -16,32 +19,6 @@ clue = [|
   | 0, 0, 0,   0, 0, 0,   0, 0, 0
   | 0, 0, 0,   0, 6, 0,   0, 0, 0
   |];
-
-%%%%%%%%%% Killer parameters %%%%%%%%%%
-
-cage_count = 0;
-
-cage_totals = [];
-
-cage_cells = [];
-
-%%%%%%%%%% Thermometer parameters %%%%%%%%%%
-
-thermo_cells = [];
-
-%%%%%%%% German Whispers parameters %%%%%%%%%
-
-GW_cells = []; 
-
-%%%%%%%% Partial Kropki parameters %%%%%%%%%
-
-krp_cells_white = [];
-
-krp_cells_black = [];
-
-%%%%%%%% Full Kropki parameters %%%%%%%%%
-
-full_kropki = false;
 
 %%%%%%%% Knight parameters %%%%%%%%%
 

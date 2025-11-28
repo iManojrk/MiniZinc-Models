@@ -1,4 +1,4 @@
-include "./sudoku-super.mzn";
+include "inverse.mzn";
 
 %%%%%%%%% Sandwich constraints %%%%%%%%%
 
@@ -119,4 +119,3 @@ output [
    else " " endif)
   | r in INDEX_1D, c in INDEX_1D
 ];
-

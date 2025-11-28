@@ -1,6 +1,18 @@
-int: n;
-type TP = tuple(int, int);
-array[1..n] of tuple(TP,TP): pairs;
+% Simple MiniZinc model demonstrating nested if-then-else (since `case` is not
+% supported in this MiniZinc version).
+
+int: x = 2;
+
+string: description =
+  if x = 1 then "one"
+  elseif x = 2 then "two"
+  elseif x = 3 then "three"
+  else "other"
+  endif;
+
 solve satisfy;
 
-% array[1..5] of int: test_arr = [1,2,3];
+output [
+  "x = " ++ show(x) ++ "\n" ++
+  "description = " ++ description ++ "\n"
+];
