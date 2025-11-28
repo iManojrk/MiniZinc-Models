@@ -22,7 +22,5 @@ clue = [|
 
 %%%%%%%% Sandwich parameters %%%%%%%%%
 
-sandwich = true;
-
 swh_row_sums = [12, 33, <>, 14, <>, 14, <>, 32, 17];
 swh_col_sums = [14, 2, 20, 15, <>, <>, 12, 3, <>];

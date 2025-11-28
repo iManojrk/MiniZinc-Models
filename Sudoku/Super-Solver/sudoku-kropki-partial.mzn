@@ -1,25 +1,25 @@
 %%%%%%%%% Partial Kropki constraints %%%%%%%%%
 
-enum CellPairRelationship = {
-  WhiteDot,
-  BlackDot,
-  X_Sum10,
-  V_Sum5
+enum KRP_CellPairRelationship = {
+  Krp_WhiteDot,
+  Krp_BlackDot,
+  Krp_X_Sum10,
+  Krp_V_Sum5
 };
 
 % unified Kropki cell description from data
-array[int] of record(Position: a, Position: b, CellPairRelationship: relation): krp_cells;
+array[int] of record(Position: a, Position: b, KRP_CellPairRelationship: relation): krp_cells;
 
 % partial Kropki constraints (dots that are present)
 constraint forall(krp in krp_cells) (
-  if krp.relation = WhiteDot then
-    abs(grid[krp.a.r, krp.a.c] - grid[krp.b.r, krp.b.c]) = 1
-  elseif krp.relation = BlackDot then
-    (grid[krp.a.r, krp.a.c] = 2 * grid[krp.b.r, krp.b.c])
+  if krp.relation = Krp_WhiteDot then
+    abs(cell(krp.a) - cell(krp.b)) = 1
+  elseif krp.relation = Krp_BlackDot then
+    (cell(krp.a) = 2 * cell(krp.b))
     \/
-    (2 * grid[krp.a.r, krp.a.c] = grid[krp.b.r, krp.b.c])
+    (2 * cell(krp.a) = cell(krp.b))
   else
-    true
+    assert(false, "Unexpected relationship type")
   endif
 );
 

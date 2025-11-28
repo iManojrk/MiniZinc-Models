@@ -43,11 +43,3 @@ GW_cells = [];
 %%%%%%%% Partial Kropki parameters %%%%%%%%%
 
 krp_cells = [];
-
-%%%%%%%% Full Kropki parameters %%%%%%%%%
-
-full_kropki = false;
-
-%%%%%%%% Knight parameters %%%%%%%%%
-
-knight = false;

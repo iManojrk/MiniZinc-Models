@@ -14,6 +14,9 @@ type Position = record(INDEX_1D: r, INDEX_1D: c);
 array[INDEX_1D, INDEX_1D] of CLUE_DIGITS: clue;
 array[INDEX_1D, INDEX_1D] of var DIGITS:   grid;
 
+function var DIGITS: cell(Position: p) =
+  grid[p.r, p.c];
+
 % clue cells must match
 constraint forall(r, c in INDEX_1D where clue[r,c] != 0) (
   grid[r,c] = clue[r,c]
@@ -36,3 +39,16 @@ constraint forall(br, bc in 0..block_size-1) (
                  r in 1..block_size, c in 1..block_size])
 );
 
+%%%%%%%%% Default output %%%%%%%%%
+
+output [
+  % optional blank line between horizontal block rows
+  (if c = 1 /\ r > 1 /\ (r-1) mod block_size = 0 then "\n" else "" endif) ++
+  % digit
+  show(grid[r,c]) ++
+  % spaces / line breaks to keep block layout between 3x3 blocks
+  (if c = size then "\n"
+   elseif c mod block_size = 0 then "  "
+   else " " endif)
+  | r in INDEX_1D, c in INDEX_1D
+];

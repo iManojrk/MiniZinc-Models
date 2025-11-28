@@ -1,19 +1,64 @@
 {
   "project": "MiniZinc projects",
   "purpose": "Provide quick context for incoming agents working on MiniZinc models and data files in this repository.",
+  "agent_role": "This context defines how any LLM should behave when reading, explaining, or editing MiniZinc models and data files in this repository. It overrides generic coding assumptions.",
   "guidelines": [
-    "Review existing MiniZinc models (e.g., Tutorials/Peter Stuckey/Hidato/hidato.mzn) and data files before making changes so that new instances stay consistent with the current syntax and layout.",
+    "Review existing MiniZinc models (for example, Tutorials/Peter Stuckey/Hidato/hidato.mzn) and data files before making changes so that new instances stay consistent with the current syntax, layout, and naming.",
     "Learn and understand MiniZinc syntax from your own knowledge base and by examining the project files; this preference is because MiniZinc is uncommon, not to restrict other available options when needed.",
-    "Keep this codex.context.json file up to date whenever you add new puzzles, conventions, or workflow tips so future agents inherit accurate instructions.",
-    "Log user preferences and intentions in this context so future agents inherit them alongside technical guidance.",
-    "user may have a keyboard issue causing stray 'e' letters or transposed characters; interpret instructions accordingly without overcorrecting",
-    "Added Sudoku dataset files: su-data-easy-2.dzn (size 9) and su-data-easy3.dzn (size 9) following the same format as su-data-easy1.dzn.",
-    "After reading this context file, immediately read and understand minizinc-style-guide.json so the shared MiniZinc syntax/style expectations are fresh.",
-    "Keep minizinc-style-guide.json current whenever new MiniZinc-specific conventions arise; treat it with the same priority as this file.",
-    "Do not modify code or data unless the user explicitly requests it; the user primarily wants conversational guidance.",
-    "When the user asks conceptual or exploratory questions (“how can I do that?”) without explicitly authorizing edits, respond with explanation only and keep the repository untouched; only run apply_patch or other edits after a clear directive such as “please change/update file …”.",
-    "The overarching goal is for the user to learn MiniZinc syntax, modeling concepts, and language usage, so bias answers toward explanation rather than automated fixes.",
-    "Act as a learning aide first and an editing agent second; prioritize walkthroughs, reasoning, and language insights."
+    "The overarching goal is for the user to learn MiniZinc syntax, modeling concepts, and language usage, so bias answers toward explanation and walkthroughs rather than opaque automated fixes.",
+    "When the user asks conceptual or exploratory questions (for example, “how can I do that?”) without explicitly authorizing edits, respond with explanation only and keep the repository untouched.",
+    "When the user explicitly asks to modify a file (for example, “update this model”, “change this constraint”, “patch this file”), you may edit code or data, but keep the edits as small, local, and easy to follow as reasonably possible.",
+    "Do not silently rewrite or restructure an entire model; if you believe a larger redesign is appropriate, first propose it in prose and, only after the user agrees, generate a full revised model.",
+    "Log important user preferences and intentions in this context so future agents inherit them alongside technical guidance.",
+    "The user may have a keyboard issue causing stray or duplicated letters or transposed characters (often extra “e”s); interpret instructions accordingly without overcorrecting.",
+    "After reading this context file, immediately read and understand minizinc-style-guide.json so the shared MiniZinc syntax and style expectations are fresh.",
+    "Keep minizinc-style-guide.json current whenever new MiniZinc-specific conventions arise; treat it with the same priority as this file."
+  ],
+  "minizinc_strictness": [
+    "Use only documented MiniZinc 2.x syntax and standard library features; do not invent new language constructs, functions, or global constraints.",
+    "Global constraints should come from the standard MiniZinc library (for example, alldifferent, cumulative, circuit) unless the user has defined custom predicates in this repository.",
+    "Comprehensions must produce arrays, sets, or constraints exactly as MiniZinc allows; avoid pseudo-code or half-specified expressions.",
+    "Do not introduce anonymous functions, lambdas, or user-defined operators unless the user specifically asks for them and they are valid MiniZinc."
+  ],
+  "explanation_style": [
+    "When explaining a MiniZinc constraint or model fragment, first give a plain-English description, then optionally connect it to the underlying constraints or solver behavior.",
+    "When offering multiple modeling options, present them as a short list with trade-offs (for example, readability versus propagation strength) rather than mixing them in a single block of text.",
+    "Where helpful, illustrate explanations with minimal, self-contained MiniZinc code snippets that the user could paste into a scratch file."
+  ],
+  "editing_policy": [
+    "Assume the user is actively building and maintaining the models; your role is to assist, not to take over ownership.",
+    "When asked to edit an existing file, prefer small, localized changes that preserve the surrounding structure, names, and comments.",
+    "If a requested change has multiple reasonable implementations, briefly describe the options and choose the simplest stable solution unless the user requests otherwise.",
+    "Never discard existing constraints or sections without explaining what is being removed and why.",
+    "If you think a refactor or larger reorganization would significantly improve clarity or correctness, describe the proposal first and obtain confirmation before generating the refactored code."
+  ],
+  "style_guide_rules": [
+    "When generating new MiniZinc models or extending existing ones, follow minizinc-style-guide.json for naming conventions, indentation, section ordering, and layout.",
+    "If the user’s existing code in a file deviates from the style guide, match that local style unless the user explicitly asks you to reformat or align with the style guide.",
+    "When you introduce a new stylistic convention that should be reused (for example, a common parameter block pattern), add it to minizinc-style-guide.json once the user agrees."
+  ],
+  "template_for_models": {
+    "preferred_order": [
+      "include statements",
+      "parameter declarations",
+      "derived parameters or helper definitions",
+      "decision variable declarations",
+      "constraints (grouped logically, with comments where useful)",
+      "objective (if any)",
+      "solve item",
+      "output block"
+    ]
+  },
+  "error_recovery": [
+    "When the MiniZinc compiler or solver reports an error, quote or restate the exact error message and discuss it directly before proposing broader changes.",
+    "If the error location is unclear from the user’s message, ask for the relevant snippet or file region instead of guessing.",
+    "Prefer targeted fixes over global rewrites; change only the parts of the model necessary to resolve the reported error unless the user asks for a larger cleanup.",
+    "If you provide a corrected version of a fragment, clearly mark it as a replacement so the user can see exactly what changed."
+  ],
+  "typo_handling": [
+    "If MiniZinc keywords or obvious variable names are slightly mistyped (for example, “varriable” instead of “variable”), correct them silently in the generated suggestions.",
+    "If a word could plausibly map to several different identifiers or concepts, ask the user for clarification rather than assuming.",
+    "When copying code from the user, preserve their identifiers unless there is a clear typo and correcting it will avoid errors."
   ],
   "sudoku_super_solver": {
     "location": "Sudoku/Super-Solver",
@@ -24,12 +69,23 @@
     "ctc_500k_dataset": {
       "path": "Sudoku/Super-Solver/ctc/500k",
       "contents": [
-        "Data files are grouped by clue type (1-thermo, 2-cages, 3-full-kropki, 2a-cages mixes cages plus whispers) and are designed to pair with sudoku-super2a.mzn.",
-        "Common parameters: size (typically 9), clue grid using 0 for blanks, cage_count/cage_max_length/cage_totals/cage_cells, thermo_count/thermo_max_length/thermo_cells, GW_count/GW_max_length/GW_cells, and reserved Kropki arrays (krp_count_white/black).",
+        "Data files are grouped by clue type (for example, 1-thermo, 2-cages, 3-full-kropki, 2a-cages mixes cages plus whispers) and are designed to pair with sudoku-super2a.mzn.",
+        "Common parameters include: size (typically 9), a clue grid using 0 for blanks, cage_count/cage_max_length/cage_totals/cage_cells, thermo_count/thermo_max_length/thermo_cells, GW_count/GW_max_length/GW_cells, and reserved Kropki arrays (krp_count_white/krp_count_black).",
         "When extending cages or lines, keep rows aligned and fill unused slots with opt blanks (<>) so the occurs() filters in the model stay valid.",
         "Sample solve command: minizinc Sudoku/Super-Solver/sudoku-super2a.mzn Sudoku/Super-Solver/ctc/500k/2a-cages.dzn."
       ]
-    }
+    },
+    "data_integrity": [
+      "All Sudoku clue grids must be square with both dimensions equal to size.",
+      "Use 0 for blank cells in standard Sudoku clue grids.",
+      "Use opt blanks (<>) only for padding structural arrays such as cages, thermometers, and line definitions, not for the Sudoku grid itself.",
+      "Use 1-based (row, col) coordinates consistently when describing or debugging puzzle positions."
+    ]
   },
-  "reminder": "Every agent reading this file must keep it updated with any new context or conventions they introduce."
+  "maintenance": [
+    "Keep this codex.context.json file up to date whenever new puzzles, conventions, or workflow tips are introduced so future agents inherit accurate instructions.",
+    "Any new puzzle type, constraint convention, or modeling technique introduced during conversation should be summarized here once it stabilizes.",
+    "When you update this file with new conventions, also consider whether minizinc-style-guide.json needs a corresponding update so the two stay in sync."
+  ],
+  "reminder": "Every agent reading this file must keep it updated with any new context or conventions they introduce, while respecting the user’s preference to remain directly involved in model design."
 }

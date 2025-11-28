@@ -11,11 +11,10 @@ constraint forall(cg in 1..cage_count where occurs(cage_totals[cg])) (
   let {
     array[int] of Position: cage = cage_cells[cg];
   } in
-  sum([ grid[cage[i].r, cage[i].c] | i in index_set(cage) ]) ~= cage_totals[cg]
+  sum([ cell(cage[i]) | i in index_set(cage) ]) ~= cage_totals[cg]
 );
 
 % no repeats within the cage
 constraint forall(cage in cage_cells) (
-  alldifferent([ grid[cage[i].r, cage[i].c] | i in index_set(cage) ])
+  alldifferent([ cell(cage[i]) | i in index_set(cage) ])
 );
-
