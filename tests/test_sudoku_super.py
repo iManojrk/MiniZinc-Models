@@ -184,3 +184,33 @@ def test_ctc_500k_6_thermo_knight():
         "MiniZinc output did not match expected grid for 6-thermo-knight.\n"
         f"Expected:\n{expected_output}\n\nGot:\n{result.stdout}"
     )
+
+
+def test_ctc_500k_7_sandwich():
+    """Run `minizinc sudoku-with-sandwich.mzn ctc/500k/7-sandwich.dzn` and check output."""
+    expected_output = """2 3 9  8 4 1  6 7 5
+1 8 5  7 3 6  4 9 2
+6 7 4  5 9 2  1 3 8
+
+8 4 6  9 2 7  5 1 3
+9 5 3  6 1 8  7 2 4
+7 1 2  3 5 4  9 8 6
+
+5 2 1  4 8 9  3 6 7
+3 9 7  2 6 5  8 4 1
+4 6 8  1 7 3  2 5 9
+----------"""
+    result = subprocess.run(
+        ["minizinc", "sudoku-with-sandwich.mzn", "ctc/500k/7-sandwich.dzn"],
+        cwd=SUPER_SOLVER,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, (
+        "MiniZinc returned a non-zero exit code for 7-sandwich.\n"
+        f"stdout:\n{result.stdout}\n\nstderr:\n{result.stderr}"
+    )
+    assert result.stdout.strip() == expected_output.strip(), (
+        "MiniZinc output did not match expected grid for 7-sandwich.\n"
+        f"Expected:\n{expected_output}\n\nGot:\n{result.stdout}"
+    )
