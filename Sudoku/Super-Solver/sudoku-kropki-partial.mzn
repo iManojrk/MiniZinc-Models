@@ -18,6 +18,10 @@ constraint forall(krp in krp_cells) (
     (cell(krp.a) = 2 * cell(krp.b))
     \/
     (2 * cell(krp.a) = cell(krp.b))
+  elseif krp.relation = Krp_V_Sum5 then
+    (cell(krp.a) + cell(krp.b)) = 5
+  elseif krp.relation = Krp_X_Sum10 then
+    (cell(krp.a) + cell(krp.b)) = 10
   else
     assert(false, "Unexpected relationship type")
   endif

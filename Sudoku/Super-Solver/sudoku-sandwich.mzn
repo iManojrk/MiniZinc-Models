@@ -68,8 +68,10 @@ constraint forall(c in INDEX_1D where occurs(swh_col_sums[c])) (
 
 %%%%%%%%% Sandwich assertion %%%%%%%%%
 
-constraint exists(r in INDEX_1D) (occurs(swh_row_sums[r]));
-constraint exists(c in INDEX_1D) (occurs(swh_col_sums[c]));
+constraint
+  exists(r in INDEX_1D) (occurs(swh_row_sums[r]))
+  \/
+  exists(c in INDEX_1D) (occurs(swh_col_sums[c]));
 
 %%%%%%%%% Solve statement %%%%%%%%%
 

@@ -2,8 +2,10 @@ include "../../sudoku-core.mzn";
 include "../../sudoku-killer.mzn";
 include "../../sudoku-thermo.mzn";
 include "../../sudoku-german-whispers.mzn";
+include "../../sudoku-kropki-partial.mzn";
 include "../../sudoku-kropki.mzn";
 include "../../sudoku-knight.mzn";
+include "../../sudoku-sandwich.mzn";
 
 % Solution
 
@@ -43,3 +45,8 @@ GW_cells = [];
 %%%%%%%% Partial Kropki parameters %%%%%%%%%
 
 krp_cells = [];
+
+%%%%%%%% Sandwich parameters %%%%%%%%%
+
+swh_row_sums = [<>, <>, <>, <>, <>, <>, <>, <>, <>];
+swh_col_sums = [<>, <>, <>, <>, <>, <>, <>, <>, <>];

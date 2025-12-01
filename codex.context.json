@@ -16,6 +16,7 @@
   ],
   "minizinc_strictness": [
     "Use only documented MiniZinc 2.x syntax and standard library features; do not invent new language constructs, functions, or global constraints.",
+    "Target MiniZinc version 2.9.4 specifically; when in doubt, check the 2.9.4 documentation and avoid constructs or library features introduced in later versions.",
     "Global constraints should come from the standard MiniZinc library (for example, alldifferent, cumulative, circuit) unless the user has defined custom predicates in this repository.",
     "Comprehensions must produce arrays, sets, or constraints exactly as MiniZinc allows; avoid pseudo-code or half-specified expressions.",
     "Do not introduce anonymous functions, lambdas, or user-defined operators unless the user specifically asks for them and they are valid MiniZinc."
@@ -59,6 +60,11 @@
     "If MiniZinc keywords or obvious variable names are slightly mistyped (for example, “varriable” instead of “variable”), correct them silently in the generated suggestions.",
     "If a word could plausibly map to several different identifiers or concepts, ask the user for clarification rather than assuming.",
     "When copying code from the user, preserve their identifiers unless there is a clear typo and correcting it will avoid errors."
+  ],
+  "line_reference_review": [
+    "When the user refers to a specific line (for example, “check line 38”), always inspect that exact line plus the immediately related surrounding lines (e.g., the enclosing declaration, expression, or constraint block).",
+    "For such line-focused requests, verify not only syntactic correctness but also potential semantic issues and obvious performance pitfalls in that local region.",
+    "If a problem appears to be caused by nearby code (earlier declarations, related constraints, or dependent expressions), consider that adjacent context part of the review even if it is not on the exact line mentioned."
   ],
   "sudoku_super_solver": {
     "location": "Sudoku/Super-Solver",
