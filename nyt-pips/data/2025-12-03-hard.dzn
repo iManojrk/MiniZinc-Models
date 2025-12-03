@@ -1,0 +1,41 @@
+grid = [|
+  10, 10,  0,  0,  0,  0,  8, 11 |
+   0, 10,  9,  0,  0,  6,  8,  0 |
+   0,  0,  7,  7,  6,  6,  0,  0 |
+   0,  0,  5,  5,  5,  5,  0,  0 |
+   0,  2,  4,  0,  0,  3,  1,  0 |
+   2,  2,  0,  0,  0,  0,  1,  1
+|];
+
+regions = [
+  (r_type: TotalEquals, total: 17),
+  (r_type: TotalEquals, total: 15),
+  (r_type: Empty, total: 0),
+  (r_type: TotalGreaterThan, total: 4),
+  (r_type: Equal, total: 0),
+  (r_type: TotalEquals, total: 3),
+  (r_type: TotalGreaterThan, total: 5),
+  (r_type: NotEqual, total: 0),
+  (r_type: TotalGreaterThan, total: 4),
+  (r_type: TotalEquals, total: 4),
+  (r_type: Empty, total: 0)
+
+  % (r_type: TotalLessThan, total: 4),
+];
+
+dominoes = [|
+  4, 3 |
+  5, 5 |
+  2, 1 |
+  2, 2 |
+
+  2, 4 |
+  6, 6 |
+  1, 4 |
+  6, 5 |
+
+  4, 4 |
+  3, 1 |
+  0, 6 |
+  3, 5
+|];

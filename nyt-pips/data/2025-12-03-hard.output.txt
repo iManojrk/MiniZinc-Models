@@ -1,0 +1,42 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=8
+%%%mzn-stat: flatIntVars=189
+%%%mzn-stat: flatBoolConstraints=4
+%%%mzn-stat: flatIntConstraints=147
+%%%mzn-stat: evaluatedHalfReifiedConstraints=8
+%%%mzn-stat: method="satisfy"
+%%%mzn-stat: flatTime=0.0724279
+%%%mzn-stat-end
+region cells
+[[(c: 7, r: 5), (c: 7, r: 6), (c: 8, r: 6)], [(c: 2, r: 5), (c: 1, r: 6), (c: 2, r: 6)], [(c: 6, r: 5)], [(c: 3, r: 5)], [(c: 3, r: 4), (c: 4, r: 4), (c: 5, r: 4), (c: 6, r: 4)], [(c: 6, r: 2), (c: 5, r: 3), (c: 6, r: 3)], [(c: 3, r: 3), (c: 4, r: 3)], [(c: 7, r: 1), (c: 7, r: 2)], [(c: 3, r: 2)], [(c: 1, r: 1), (c: 2, r: 1), (c: 2, r: 2)], [(c: 8, r: 1)]]
+dominoes
+[4, 3, 5, 5, 2, 1, 2, 2, 2, 4, 6, 6, 1, 4, 6, 5, 4, 4, 3, 1, 0, 6, 3, 5]
+[(c: 3, r: 4), (c: 3, r: 3), (c: 1, r: 6), (c: 2, r: 6), (c: 7, r: 2), (c: 6, r: 2), (c: 1, r: 1), (c: 2, r: 1), (c: 8, r: 1), (c: 7, r: 1), (c: 7, r: 6), (c: 8, r: 6), (c: 6, r: 3), (c: 6, r: 4), (c: 3, r: 5), (c: 2, r: 5), (c: 4, r: 4), (c: 5, r: 4), (c: 4, r: 3), (c: 5, r: 3), (c: 2, r: 2), (c: 3, r: 2), (c: 6, r: 5), (c: 7, r: 5)]
+
+4 3 | 3 (4, 3)
+5 5 | 0 (6, 1)
+2 1 | 2 (2, 7)
+2 2 | 0 (1, 1)
+2 4 | 2 (1, 8)
+6 6 | 0 (6, 7)
+1 4 | 1 (3, 6)
+6 5 | 2 (5, 3)
+4 4 | 0 (4, 4)
+3 1 | 0 (3, 4)
+0 6 | 0 (2, 2)
+3 5 | 0 (5, 6)
+----------
+%%%mzn-stat: initTime=0.00104715
+%%%mzn-stat: solveTime=183.794
+%%%mzn-stat: solutions=1
+%%%mzn-stat: variables=197
+%%%mzn-stat: propagators=199
+%%%mzn-stat: propagations=685138467
+%%%mzn-stat: nodes=24343146
+%%%mzn-stat: failures=12171562
+%%%mzn-stat: restarts=0
+%%%mzn-stat: peakDepth=57
+%%%mzn-stat-end
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

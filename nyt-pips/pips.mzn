@@ -3,7 +3,7 @@ include "alldifferent.mzn";
 set of int: Suit = 0..6;
 array[int, 1..2] of Suit: dominoes;
 
-enum RegionType = {Empty, Equal, TotalEquals, TotalLessThan, TotalGreaterThan};
+enum RegionType = {Empty, Equal, NotEqual, TotalEquals, TotalLessThan, TotalGreaterThan};
 type Region = record(RegionType: r_type, 0..25: total);
 array[int] of Region: regions;
 
@@ -27,6 +27,8 @@ array[int] of array[int] of Position: region_cells = [
 
 array[DOMINOES, 1..2] of var Position: domino_positions;
 array[ROWS, COLS] of var Suit: pips;
+int: COL_COUNT = card(COLS);
+array[DOMINOES, 1..2] of var int: domino_end_index;
 
 %%%%%%%%% Constraints %%%%%%%%%
 
@@ -39,17 +41,15 @@ constraint forall(di in DOMINOES) (
 
 % all dominoes are placed within the bounds
 constraint forall(di in DOMINOES, s in 1..2) (
-  exists(ri in REGIONS) (
-    exists(i in index_set(region_cells[ri])) (
-      domino_positions[di, s] = region_cells[ri][i]
-    )
-  )
+  grid[domino_positions[di, s].r,domino_positions[di, s].c] > 0
 );
 
 % dominoes dont overlap each other
-constraint forall(di, dj in DOMINOES, si, sj in 1..2 where di < dj) (
-  domino_positions[di,si] != domino_positions[dj,sj]
+constraint forall(di in DOMINOES, s in 1..2) (
+  domino_end_index[di,s] =
+    (domino_positions[di,s].r - 1) * COL_COUNT + domino_positions[di,s].c
 );
+constraint alldifferent([domino_end_index[di,s] | di in DOMINOES, s in 1..2]);
 
 % each domino end writes its suit into its cell
 constraint forall(di in DOMINOES, s in 1..2) (
@@ -69,9 +69,11 @@ constraint forall(ri in REGIONS) (
   if rg.r_type = Empty then
     true
   elseif rg.r_type = Equal then
-    forall(cl1,cl2 in cells) (
-      pips[cl1.r, cl1.c] = pips[cl2.r, cl2.c]
+    forall(cli in 2..length(cells)) (
+      pips[cells[cli].r, cells[cli].c] = pips[cells[1].r, cells[1].c]
     )
+  elseif rg.r_type = NotEqual then
+    alldifferent([pips[cells[cli].r, cells[cli].c] | cli in index_set(cells)])
   elseif rg.r_type = TotalEquals then
     sum(cl1 in cells) (
       pips[cl1.r, cl1.c]
