@@ -1,16 +1,18 @@
 include "alldifferent.mzn";
 
-set of int: Suit = 0..6;
-array[int, 1..2] of Suit: dominoes;
+set of int: SUIT = 0..6;
+array[int, 1..2] of SUIT: dominoes;
 
 enum RegionType = {Empty, Equal, NotEqual, TotalEquals, TotalLessThan, TotalGreaterThan};
-type Region = record(RegionType: r_type, 0..25: total);
+type Region = record(RegionType: r_type, 0..50: total);
 array[int] of Region: regions;
 
 array[int,int] of 0..length(regions): grid;
 
 set of int: ROWS = index_set_1of2(grid);
 set of int: COLS = index_set_2of2(grid);
+int: ROW_COUNT = card(ROWS);
+int: COL_COUNT = card(COLS);
 set of int: REGIONS = index_set(regions);
 set of int: DOMINOES = index_set_1of2(dominoes);
 
@@ -23,14 +25,75 @@ array[int] of array[int] of Position: region_cells = [
   ] | ri in REGIONS
 ];
 
+array[SUIT] of 0..(card(DOMINOES)*2): domino_suit_count = array1d(SUIT, [
+  sum(di in DOMINOES, s in 1..2) (
+    bool2int(dominoes[di,s] = suit)
+  )
+  | suit in SUIT
+]);
+
+% calculating grid bounds all dominoes should be placed within the bounds
+set of int: VALID_INDICES = { (r-1)*COL_COUNT + c | r in ROWS, c in COLS where grid[r,c] > 0 };
+
 %%%%%%%%% Var %%%%%%%%%
 
 array[DOMINOES, 1..2] of var Position: domino_positions;
-array[ROWS, COLS] of var Suit: pips;
-int: COL_COUNT = card(COLS);
-array[DOMINOES, 1..2] of var int: domino_end_index;
+array[ROWS, COLS] of var SUIT: pips;
+array[DOMINOES, 1..2] of var VALID_INDICES: domino_index;
 
-%%%%%%%%% Constraints %%%%%%%%%
+%%%%%%%%% Asserts %%%%%%%%%
+
+% all regions should exist in the grid
+constraint forall(ri in REGIONS) (
+  assert(
+    exists(r in ROWS, c in COLS) (
+      grid[r,c] = ri
+    ),
+    "region " ++ show(ri) ++ " is not in the grid."
+  )
+);
+
+function set of int: expand_neighbors(array[int] of Position: cells, set of int: visited) =
+  visited union {
+    j |
+      i in visited,
+      j in index_set(cells)
+    where abs(cells[i].r - cells[j].r) + abs(cells[i].c - cells[j].c) = 1
+  };
+
+function set of int: flood(array[int] of Position: cells, set of int: visited, int: steps) =
+  if steps = 0 \/ card(visited) = length(cells) then visited
+  else flood(cells, expand_neighbors(cells, visited), steps - 1)
+  endif;
+
+% regions should be contiguous
+constraint forall(ri in REGIONS) (
+  let {
+    array[int] of Position: cells = region_cells[ri],
+    int: cell_count = length(cells),
+    set of int: reachable = flood(
+      cells,
+      if cell_count = 0 then {}
+      else {1}
+      endif,
+      cell_count
+    )
+  } in
+  assert(
+    cell_count = card(reachable),
+    "region " ++ show(ri) ++ " is not contiguous."
+  )
+);
+
+% total occupied cells equals twice the number of dominoes
+constraint assert(
+  sum(ri in REGIONS)(length(region_cells[ri])) = card(DOMINOES) * 2,
+  "grid cells count must equal twice the domino count"
+);
+
+
+
+%%%%%%%%% Primary Constraints %%%%%%%%%
 
 % the suits of a domino is next to each other
 constraint forall(di in DOMINOES) (
@@ -39,17 +102,12 @@ constraint forall(di in DOMINOES) (
   = 1
 );
 
-% all dominoes are placed within the bounds
-constraint forall(di in DOMINOES, s in 1..2) (
-  grid[domino_positions[di, s].r,domino_positions[di, s].c] > 0
-);
-
 % dominoes dont overlap each other
 constraint forall(di in DOMINOES, s in 1..2) (
-  domino_end_index[di,s] =
+  domino_index[di,s] =
     (domino_positions[di,s].r - 1) * COL_COUNT + domino_positions[di,s].c
 );
-constraint alldifferent([domino_end_index[di,s] | di in DOMINOES, s in 1..2]);
+constraint alldifferent([domino_index[di,s] | di in DOMINOES, s in 1..2]);
 
 % each domino end writes its suit into its cell
 constraint forall(di in DOMINOES, s in 1..2) (
@@ -90,6 +148,15 @@ constraint forall(ri in REGIONS) (
   endif
 );
 
+%%%%%%%%% Secondary Constraints %%%%%%%%%
+
+% explicit check: domino suits count matches pips on the grid
+constraint forall(suit in SUIT) (
+  domino_suit_count[suit] = sum(r in ROWS, c in COLS where grid[r,c] > 0) (
+    bool2int(pips[r,c] = suit)
+  )
+);
+
 % Fixing symmetric dominos for fewer turns
 constraint forall(di in DOMINOES where dominoes[di, 1] = dominoes[di,2]) (
   domino_positions[di,1].r < domino_positions[di,2].r
@@ -126,3 +193,6 @@ output [
 
   | di in DOMINOES
 ];
+
+solve :: int_search([domino_index[di,s] | di in DOMINOES, s in 1..2], first_fail, indomain_min, complete) satisfy;
+% solve :: int_search([pips[r,c] | r in ROWS, c in COLS], first_fail, indomain_min, complete) satisfy;
